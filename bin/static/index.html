@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Chart the Stock Market</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+<div id="big_contain">
+		<div id="contain">
+			<h2>Chart the Stock Market</h2>
+			<div id="times">
+				Form <input type="text" placeholder ="22/05/2018">
+				To <input type="text" placeholder ="29/05/2018"><br><br>
+			</div>
+			<div id="chart">
+				<canvas id="myChart"></canvas>
+				
+			</div>
+			<div id="sub-contain">
+				<div id="input_button">
+					<input type="text" placeholder="Name of stock" id="fill_stock">
+					<button id="add" onclick="add()">Submit</button>
+					<script src="js/chart.js"></script>
+				</div>
+				<div id="input_button">
+					<input type="text" placeholder="Name of stock" id="namestock">
+					<input type="text" placeholder="data" id="data" style = "margin-top:10px;">
+					<button id="add" onclick="add_stock()">Add</button>
+				</div>
+			</div>
+			<div id="name_of_stock">
+				<div class="name_stock" id="VNET">
+					<div  id="tag_div" class="sub_div" >
+						<button id="#000000">X</button>
+						<h3 id="tag_h3">VNET</h3>
+					</div>
+					<p>Microsoft Corporation (MSFT) Prices, Dividends, Splits and Trading Volume</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

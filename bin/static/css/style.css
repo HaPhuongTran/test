@@ -1,0 +1,16 @@
+body{background-color: #EEEEEE;}
+#big_contain{width: 55%; margin: auto;}
+#contain { opacity: 0.8; background-color: white; float: left;  box-shadow: 5px 10px 8px #888888; width: 100%; margin-top: 50px;}
+#contain h2 {text-align: center; font-size: 35px;}
+#times {width: 45%; margin-left:40%;}
+#times input {width: 70px;}
+#chart {width:90%; height: 50%;  border: 1px solid black; margin: auto;}
+#input_button{margin-top: 20px; padding-bottom: 20px; 	}
+#input_button input{margin-left: 20px; width: 60%; height: 30px;}
+#input_button button {float: right; margin-right: 20px; width: 80px; height: 30px;}
+.name_stock { opacity: 0.8; border: 1px solid gray; width: 29%; float: left; margin:1.5%; border-radius: 2px; }
+.sub_div {height: 75px;}
+#tag_h3 {color: #ffffff;}
+#tag_div {background-color: #000000;}
+h3 {font-size: 25px; text-align: center; margin-top: -1px;}
+p{margin: 20px; text-align: center;}
