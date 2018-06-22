@@ -13,4 +13,5 @@ public interface StockDao {
 	List<Stock> list();
 	void update(String namestock,Date date, Stock stock);
 	void delete(String namestock, Date date);
+	//List<String> get(String namestock);
 }

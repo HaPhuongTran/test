@@ -25,9 +25,15 @@ public class StockController {
 		   return ResponseEntity.ok().body(stock);
 	   }
 	   
-	   @GetMapping("/add/{namestock}")
+//	   @GetMapping("/list/{namestock}")
+//	   public ResponseEntity<?> get(@PathVariable("namestock") String namestock) {
+//		   return (stockService.get(namestock).isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND): new ResponseEntity<>(stockService.get(namestock), HttpStatus.FOUND);
+//	   }
+	   
+	   @GetMapping("/list/{namestock}")
 	   public ResponseEntity<?> get(@PathVariable("namestock") String namestock) {
-		   return (stockService.get(namestock).isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND): new ResponseEntity<>(stockService.get(namestock), HttpStatus.FOUND);
+		   
+		   return ResponseEntity.ok().body(stockService.get(namestock));
 	   }
 	   
 	   @RequestMapping("/liststock")

@@ -16,7 +16,7 @@
 
 
 
- // var ctx = document.getElementById('myChart').getContext('2d');
+// var ctx = document.getElementById('myChart').getContext('2d');
 
 // lable_data = ["January", "February", "March", "April", "May", "June", "July"];
 // var data = {
@@ -127,53 +127,14 @@ function add_stock(){
     var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
     xhr.send(data);
 }
-
-var ctx = document.getElementById('myChart').getContext('2d');
-
-lable_data = ["January", "February", "March", "April", "May", "June", "July"];
-var data = {
-         labels: lable_data,
-         datasets:[]
-};
-
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {}
-});
-
 var arr = [];
-
 function reqListener () {
-    var datanamestock =[""];
-    var count;
-    arr = Object.values(response);
-            var newDataset = {
-                label: "VNET",
-                backgroundColor: 'rgba(255, 255, 255, 0)',
-                borderColor: '#000000',
-                data: arr
-            }
-            data.datasets.push(newDataset);
-    for(var i =0; i<datanamestock.length; i++){
-        if((data.datasets[0].label).localeCompare(datanamestock[i]) !=0){
-            chart.update();
-            newdata=[];
-            count =1; 
-        }
-        else {count =0; }
-    }
-    alert(count);
-
-    if(count ==1){
-        datanamestock.push(document.getElementById("namestock").value);
-        //alert(datanamestock);
-    }
+  arr = Object.values(response);
+  for(var i = 0; i < arr.length; i++){
+    alert(arr[i]);
+  }
+  
 }
-
-//alert(newdata);
-
-
 var response = null;
 function display_stock(){
     var xhr = new XMLHttpRequest();

@@ -14,20 +14,9 @@
 
 // var data_num = [23,45,2,6,1,56,38,23,57,68,43,13,76,34, 100,57,277,345,78,1111,2075, 56,47,33,68,2345,670,135];
 
-function add_stock(){
-    
-    var xhr = new XMLHttpRequest();
-    var url = "http://127.0.0.1:8000/add";
-    xhr.open("POST", url, false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-    alert(this.status);
-    };
-    var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
-    xhr.send(data);
-}
 
- var ctx = document.getElementById('myChart').getContext('2d');
+
+ // var ctx = document.getElementById('myChart').getContext('2d');
 
 // lable_data = ["January", "February", "March", "April", "May", "June", "July"];
 // var data = {
@@ -126,15 +115,76 @@ function add_stock(){
 //     });   
 // }
 
+function add_stock(){
+    
+    var xhr = new XMLHttpRequest();
+    var url = "http://127.0.0.1:8000/add";
+    xhr.open("POST", url, false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+    alert(this.status);
+    };
+    var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
+    xhr.send(data);
+}
 
+var ctx = document.getElementById('myChart').getContext('2d');
 
-@Override
-    public List<Stock> list(){
-          Session session = entitymanger.unwrap(SessionFactory.class).openSession();
-          CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-          CriteriaQuery<Stock> criteriaQuery = criteriaBuilder.createQuery(Stock.class);
-          Root<Stock> root =criteriaQuery.from(Stock.class);
-          criteriaQuery.select(root);
-          Query<Stock> query = session.createQuery(criteriaQuery);
-          return query.getResultList();
+lable_data = ["January", "February", "March", "April", "May", "June", "July"];
+var data = {
+         labels: lable_data,
+         datasets:[]
+};
+
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {}
+});
+
+var arr = [];
+
+function reqListener () {
+    var datanamestock =[""];
+    var count;
+    arr = Object.values(response);
+            var newDataset = {
+                label: "VNET",
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                borderColor: '#000000',
+                data: arr
+            }
+            data.datasets.push(newDataset);
+    for(var i =0; i<datanamestock.length; i++){
+        if((data.datasets[0].label).localeCompare(datanamestock[i]) !=0){
+            chart.update();
+            newdata=[];
+            count =1; 
+        }
+        else {count =0; }
     }
+    alert(count);
+
+    if(count ==1){
+        datanamestock.push(document.getElementById("namestock").value);
+        //alert(datanamestock);
+    }
+}
+
+//alert(newdata);
+
+
+var response = null;
+function display_stock(){
+    var xhr = new XMLHttpRequest();
+    var url = "http://127.0.0.1:8000/list/" + document.getElementById("namestock").value;
+    xhr.open("GET", url, false);
+    xhr.addEventListener("load", reqListener);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function (responseText) {
+    //alert(JSON.stringify(responseText));
+        response = JSON.parse(this.response);
+        var arr = [];
+    };
+    xhr.send();
+}
