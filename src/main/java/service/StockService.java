@@ -11,6 +11,7 @@ import entity.Stock;
 public interface StockService {
 	String save(Stock stock );
 	List<String> get (String nameStock);
+	List<String> getDate();
 	List<Stock> list();
 	void update(String nameStock, Date date, Stock stock);
 	void delete(String nameStock, Date date);

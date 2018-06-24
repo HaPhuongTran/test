@@ -19,7 +19,7 @@ public class StockController {
 	@Autowired
 	private StockService stockService;
 	   /*---Add new book---*/
-	   @PostMapping("/add")
+	   @PostMapping("/add/stock")
 	   public ResponseEntity<Stock> save(@RequestBody  Stock stock){
 		   stockService.save(stock);
 		   return ResponseEntity.ok().body(stock);
@@ -32,8 +32,12 @@ public class StockController {
 	   
 	   @GetMapping("/list/{namestock}")
 	   public ResponseEntity<?> get(@PathVariable("namestock") String namestock) {
-		   
 		   return ResponseEntity.ok().body(stockService.get(namestock));
+	   }
+	   
+	   @GetMapping("/list/listdate")
+	   public ResponseEntity<List<String>> getDate() {
+		   return ResponseEntity.ok().body(stockService.getDate());
 	   }
 	   
 	   @RequestMapping("/liststock")

@@ -29,6 +29,11 @@ public class StockServiceImp implements StockService {
 	}
 	
 	@Override
+	public List<String> getDate() {
+		return stockDao.getDate();
+	}
+	
+	@Override
 	public List<Stock> list(){
 		return stockDao.list();
 	}

@@ -1,6 +1,9 @@
 package dao;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
@@ -42,6 +45,22 @@ public class StockDaoImp implements StockDao{
 		Query<String> query = session.createQuery(criteriaQuery);
 		List<String> listStock = query.getResultList();
 		return listStock;
+	}
+	
+	public List<String> getDate() {
+		Session session = entitymanger.unwrap(SessionFactory.class).openSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<Timestamp> criteriaQuery = criteriaBuilder.createQuery(Timestamp.class);
+		Root<Stock> root = criteriaQuery.from(Stock.class);
+		criteriaQuery.select(root.get("date")).distinct(true);
+		Query<Timestamp> query = session.createQuery(criteriaQuery);
+		List<Timestamp> listStock = query.getResultList();
+		ArrayList<String> al=new ArrayList<String>();  
+		for (int i =0; i<listStock.size();i++) {
+			String formattedDate = listStock.get(i).toString();
+			al.add(formattedDate);
+		}
+		return al;
 	}
 	
 	@Override

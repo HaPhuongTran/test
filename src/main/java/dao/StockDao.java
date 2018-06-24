@@ -9,6 +9,7 @@ import entity.Stock;
 public interface StockDao {
 	String save(Stock stock);
 	List<String> get(String nameStock);
+	List<String > getDate();
 	//String get(String nameStock);
 	List<Stock> list();
 	void update(String namestock,Date date, Stock stock);

@@ -1,6 +1,244 @@
 
+var arr1 = [];
+var arr2 = [];
+var indexof;
+var response = null;
+var VNET = "VNET";
 
- 
+var xhr = new XMLHttpRequest();
+    var url = "http://localhost:8000/list/listdate";
+    xhr.open("GET", url, false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function (responseText) {
+        response = JSON.parse(this.response);
+        arr1 = Object.values(response);
+    };
+    xhr.send();
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+lable_data = arr1;
+
+var data1 = {
+         labels: lable_data,
+         datasets:[]
+};
+
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: data1,
+    options: {}
+});
+
+var datanamestock =[""];
+var count =0;
+
+
+
+var xhr1 = new XMLHttpRequest();
+var url1 = "http://127.0.0.1:8000/list/" + VNET;
+xhr1.open("GET", url1, false);
+xhr1.addEventListener("load", reqListener_first);
+xhr1.setRequestHeader("Content-Type", "application/json");
+xhr1.onreadystatechange = function (responseText) {
+//alert(JSON.stringify(responseText));
+    response = JSON.parse(this.response);
+    arr2 = [];
+};
+xhr1.send();
+
+function add_tag(){
+    value_namestock = document.getElementById("namestock").value;
+    var div_add = document.createElement("div");
+    var sub_div_add = document.createElement("div");
+    var h3_add = document.createElement ("h3");
+    var p_add = document.createElement ("p");
+    var button_add = document.createElement("button");
+
+    h3_add.style.color = "#FFFFFF";
+    sub_div_add.style.backgroundColor = "#990033";
+    
+
+    div_add.classList.add("name_stock");
+    div_add.id = value_namestock;
+    sub_div_add.classList.add("sub_div");
+    button_add.id = value_namestock +"_add";
+    button_add.classList.add("button_add");
+    
+
+    var textnode = document.createTextNode(value_namestock);
+    var text_button = document.createTextNode("X");
+    var text_add = document.createTextNode("Microsoft Corporation (MSFT) Prices, Dividends, Splits and Trading Volume");
+    
+    div_add.appendChild(sub_div_add);
+    div_add.appendChild(p_add);
+    sub_div_add.appendChild(button_add);
+    sub_div_add.appendChild(h3_add);
+    button_add.appendChild(text_button);
+    p_add.appendChild(text_add);
+    h3_add.appendChild(textnode);
+
+    document.getElementById("name_of_stock").appendChild(div_add);
+
+}
+
+
+function reqListener () {
+    value_namestock = document.getElementById("namestock").value;
+    for(var i = 0; i<datanamestock.length; i++){
+        if(value_namestock.localeCompare(datanamestock[i]) !=0){
+            count =1;
+        }
+        else {count =0; indexof =i; break;}
+    }
+    if(count == 1){
+        arr = Object.values(response);
+        var newDataset = {
+            label: value_namestock,
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            borderColor: '#000000',
+            data: arr
+        }
+        data1.datasets.push(newDataset);
+        chart.update();
+        datanamestock.push(value_namestock);
+
+        add_tag();
+        
+        var b_close = document.getElementById(value_namestock +"_add");
+        var get_id_stock = document.getElementById(value_namestock);
+        b_close.addEventListener("click", function(){
+            get_id_stock.remove();
+            for( var index =0; index< data1.datasets.length; index++){
+                if(data1.datasets[index].label == value_namestock){
+                    data1.datasets.splice(index,1);
+                    chart.update();
+                }
+            }
+        });
+    }
+    else{
+        data1.datasets.splice(indexof-1,1);
+        arr = Object.values(response);
+        var newDataset = {
+            label: value_namestock,
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            borderColor: '#000000',
+            data: arr
+        }
+        data1.datasets.push(newDataset);
+        chart.update();
+        add_tag();
+    }
+}
+
+function reqListener_first(){
+    for(var i = 0; i<datanamestock.length; i++){
+    if(VNET.localeCompare(datanamestock[i]) !=0){
+        count =1;
+    }
+    else {count =0; indexof =i; break;}
+    }
+    if(count == 1){
+        arr2 = Object.values(response);
+        var newDataset = {
+            label: VNET,
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            borderColor: '#000000',
+            data: arr2
+        }
+        data1.datasets.push(newDataset);
+        chart.update();
+        datanamestock.push(VNET);
+
+        var div_add = document.createElement("div");
+        var sub_div_add = document.createElement("div");
+        var h3_add = document.createElement ("h3");
+        var p_add = document.createElement ("p");
+        var button_add = document.createElement("button");
+
+        h3_add.style.color = "#FFFFFF";
+        sub_div_add.style.backgroundColor = "#990033";
+        
+
+        div_add.classList.add("name_stock");
+        div_add.id = VNET;
+        sub_div_add.classList.add("sub_div");
+        button_add.id = VNET +"_add";
+        button_add.classList.add("button_add");
+        
+
+        var textnode = document.createTextNode(VNET);
+        var text_button = document.createTextNode("X");
+        var text_add = document.createTextNode("Microsoft Corporation (MSFT) Prices, Dividends, Splits and Trading Volume");
+        
+        div_add.appendChild(sub_div_add);
+        div_add.appendChild(p_add);
+        sub_div_add.appendChild(button_add);
+        sub_div_add.appendChild(h3_add);
+        button_add.appendChild(text_button);
+        p_add.appendChild(text_add);
+        h3_add.appendChild(textnode);
+
+        document.getElementById("name_of_stock").appendChild(div_add);
+        
+        var b_close = document.getElementById(VNET +"_add");
+        var get_id_stock = document.getElementById(VNET);
+        b_close.addEventListener("click", function(){
+            get_id_stock.remove();
+            for( var index =0; index< data1.datasets.length; index++){
+                if(data1.datasets[index].label == VNET){
+                    data1.datasets.splice(index,1);
+                    chart.update();
+                }
+            }
+        });
+    }
+    else{
+        data1.datasets.splice(indexof-1,1);
+        arr = Object.values(response);
+        var newDataset = {
+            label: VNET,
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            borderColor: '#000000',
+            data: arr
+        }
+        data1.datasets.push(newDataset);
+        chart.update();
+    }
+}
+
+//alert(newdata);
+
+
+function display_stock(){
+    var xhr = new XMLHttpRequest();
+    var url = "http://127.0.0.1:8000/list/" + document.getElementById("namestock").value;
+    xhr.open("GET", url, false);
+    xhr.addEventListener("load", reqListener);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function (responseText) {
+    //alert(JSON.stringify(responseText));
+        response = JSON.parse(this.response);
+        var arr = [];
+    };
+    xhr.send();
+}
+
+function add_stock(){
+    
+    var xhr = new XMLHttpRequest();
+    var url = "http://127.0.0.1:8000/add/stock";
+    xhr.open("POST", url, false);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+    alert(this.status);
+    display_stock();
+    };
+    var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
+    xhr.send(data);
+}
+
 
 // var name_stock_array = ["no_name", "VNET","AGTK", "AKAM", "BIDU", "BCOR", "WIFI", "BRNW", "CARB", "JRJC", "CCIH", "CHICF", "CCOI", "CXDO", "CRWG", "EATR", "EDXC",
 //                         "ENV", "FB", "FLPC", "FZRO", "GEGI", "GDDY", "IAC", "IIJI", "IPAS","JCOM", "LOGL", "LLNW", "MOMO", "NTES", "EGOV", "OTOW", "OPESY",
@@ -115,76 +353,4 @@
 //     });   
 // }
 
-function add_stock(){
-    
-    var xhr = new XMLHttpRequest();
-    var url = "http://127.0.0.1:8000/add";
-    xhr.open("POST", url, false);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-    alert(this.status);
-    };
-    var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
-    xhr.send(data);
-}
-
-var ctx = document.getElementById('myChart').getContext('2d');
-
-lable_data = ["January", "February", "March", "April", "May", "June", "July"];
-var data = {
-         labels: lable_data,
-         datasets:[]
-};
-
-var chart = new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {}
-});
-
-var arr = [];
-
-function reqListener () {
-    var datanamestock =[""];
-    var count;
-    arr = Object.values(response);
-            var newDataset = {
-                label: "VNET",
-                backgroundColor: 'rgba(255, 255, 255, 0)',
-                borderColor: '#000000',
-                data: arr
-            }
-            data.datasets.push(newDataset);
-    for(var i =0; i<datanamestock.length; i++){
-        if((data.datasets[0].label).localeCompare(datanamestock[i]) !=0){
-            chart.update();
-            newdata=[];
-            count =1; 
-        }
-        else {count =0; }
-    }
-    alert(count);
-
-    if(count ==1){
-        datanamestock.push(document.getElementById("namestock").value);
-        //alert(datanamestock);
-    }
-}
-
-//alert(newdata);
-
-
-var response = null;
-function display_stock(){
-    var xhr = new XMLHttpRequest();
-    var url = "http://127.0.0.1:8000/list/" + document.getElementById("namestock").value;
-    xhr.open("GET", url, false);
-    xhr.addEventListener("load", reqListener);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function (responseText) {
-    //alert(JSON.stringify(responseText));
-        response = JSON.parse(this.response);
-        var arr = [];
-    };
-    xhr.send();
-}
+//data.datasets[i].label
