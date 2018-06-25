@@ -1,6 +1,8 @@
 package entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,10 +22,9 @@ public class Stock implements Serializable {
 	private String name_Of_Stock;
 	
 	@Id
-	@CreationTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	
-	private Date date = new java.sql.Date(new java.util.Date().getTime());
+	//@CreationTimestamp
+	//@Temporal(TemporalType.TIMESTAMP)
+	private String date = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 	
 	private float data;
 	
@@ -43,11 +44,11 @@ public class Stock implements Serializable {
 		this.name_Of_Stock = name_Of_Stock;
 	}
 	
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 	
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	

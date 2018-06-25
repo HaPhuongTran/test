@@ -50,17 +50,12 @@ public class StockDaoImp implements StockDao{
 	public List<String> getDate() {
 		Session session = entitymanger.unwrap(SessionFactory.class).openSession();
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-		CriteriaQuery<Timestamp> criteriaQuery = criteriaBuilder.createQuery(Timestamp.class);
+		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
 		Root<Stock> root = criteriaQuery.from(Stock.class);
-		criteriaQuery.select(root.get("date")).distinct(true);
-		Query<Timestamp> query = session.createQuery(criteriaQuery);
-		List<Timestamp> listStock = query.getResultList();
-		ArrayList<String> al=new ArrayList<String>();  
-		for (int i =0; i<listStock.size();i++) {
-			String formattedDate = listStock.get(i).toString();
-			al.add(formattedDate);
-		}
-		return al;
+		criteriaQuery.select(root.get("date"));
+		Query<String> query = session.createQuery(criteriaQuery);
+		List<String> listStock = query.getResultList();
+		return listStock;
 	}
 	
 	@Override
