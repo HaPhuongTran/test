@@ -2,10 +2,16 @@
 var arr1 = [];
 var arr2 = [];
 var indexof;
+var lable_data = [];
+var ctx;
 var response = null;
 var VNET = "VNET";
 
-var xhr = new XMLHttpRequest();
+load_first();
+//auto_complete();
+
+function load_first(){
+    var xhr = new XMLHttpRequest();
     var url = "http://localhost:8000/list/listdate";
     xhr.open("GET", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -16,8 +22,9 @@ var xhr = new XMLHttpRequest();
     xhr.send();
 
 
-var ctx = document.getElementById('myChart').getContext('2d');
-lable_data = arr1;
+    ctx = document.getElementById('myChart').getContext('2d');
+    lable_data = arr1;
+}
 
 var data1 = {
          labels: lable_data,
@@ -30,7 +37,7 @@ var chart = new Chart(ctx, {
     options: {}
 });
 
-var datanamestock =[""];
+var datanamestock =[];
 var count =0;
 
 
@@ -82,6 +89,26 @@ function add_tag(){
 
 }
 
+function button_close(){
+    value_namestock = document.getElementById("namestock").value;
+    var b_close = document.getElementById(value_namestock +"_add");
+    var get_id_stock = document.getElementById(value_namestock);
+    b_close.addEventListener("click", function(){
+        get_id_stock.remove();
+        for(var i = 0; i<datanamestock.length; i++){
+            if(value_namestock.localeCompare(datanamestock[i]) ==0){
+                datanamestock.splice(i,1);
+            }
+        }
+        for( var index =0; index< data1.datasets.length; index++){
+            if(data1.datasets[index].label == value_namestock){
+                data1.datasets.splice(index,1);
+                chart.update();
+            }
+        }
+    });
+}
+
 
 function reqListener () {
     value_namestock = document.getElementById("namestock").value;
@@ -89,7 +116,7 @@ function reqListener () {
         if(value_namestock.localeCompare(datanamestock[i]) !=0){
             count =1;
         }
-        else {count =0; indexof =i; break;}
+        else {count =0; break;}
     }
     if(count == 1){
         arr = Object.values(response);
@@ -104,21 +131,15 @@ function reqListener () {
         datanamestock.push(value_namestock);
 
         add_tag();
+        button_close();
         
-        var b_close = document.getElementById(value_namestock +"_add");
-        var get_id_stock = document.getElementById(value_namestock);
-        b_close.addEventListener("click", function(){
-            get_id_stock.remove();
-            for( var index =0; index< data1.datasets.length; index++){
-                if(data1.datasets[index].label == value_namestock){
-                    data1.datasets.splice(index,1);
-                    chart.update();
-                }
-            }
-        });
     }
-    else{
-        data1.datasets.splice(indexof-1,1);
+    else {
+        for(indexof =0; indexof<data1.datasets.length; indexof++){
+            if((data1.datasets[indexof].label).localeCompare(value_namestock) ==0){
+                data1.datasets.splice(indexof,1); break;
+            }
+        }
         arr = Object.values(response);
         var newDataset = {
             label: value_namestock,
@@ -128,12 +149,13 @@ function reqListener () {
         }
         data1.datasets.push(newDataset);
         chart.update();
-        add_tag();
+        // add_tag();
+        // button_close();
     }
 }
 
 function reqListener_first(){
-    for(var i = 0; i<datanamestock.length; i++){
+    for(var i = 0; i<=datanamestock.length; i++){
     if(VNET.localeCompare(datanamestock[i]) !=0){
         count =1;
     }
@@ -182,10 +204,16 @@ function reqListener_first(){
 
         document.getElementById("name_of_stock").appendChild(div_add);
         
+        value_namestock = document.getElementById("namestock").value;
         var b_close = document.getElementById(VNET +"_add");
         var get_id_stock = document.getElementById(VNET);
         b_close.addEventListener("click", function(){
             get_id_stock.remove();
+            for(var i = 0; i<datanamestock.length; i++){
+                if(value_namestock.localeCompare(datanamestock[i]) !=0){
+                 datanamestock.splice(i,1);
+                }
+            }
             for( var index =0; index< data1.datasets.length; index++){
                 if(data1.datasets[index].label == VNET){
                     data1.datasets.splice(index,1);
@@ -195,7 +223,7 @@ function reqListener_first(){
         });
     }
     else{
-        data1.datasets.splice(indexof-1,1);
+        data1.datasets.splice(indexof,1);
         arr = Object.values(response);
         var newDataset = {
             label: VNET,
@@ -232,12 +260,17 @@ function add_stock(){
     xhr.open("POST", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-    alert(this.status);
+    //alert(this.status);
     display_stock();
     };
     var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
     xhr.send(data);
 }
+
+var name_stock_array = ["no_name", "VNET","AGTK", "AKAM", "BIDU", "BCOR", "WIFI", "BRNW", "CARB", "JRJC", "CCIH", "CHICF", "CCOI", "CXDO", "CRWG", "EATR", "EDXC",
+                        "ENV", "FB", "FLPC", "FZRO", "GEGI", "GDDY", "IAC", "IIJI", "IPAS","JCOM", "LOGL", "LLNW", "MOMO", "NTES", "EGOV", "OTOW", "OPESY",
+                        "PTOP", "SIFY", "SINA", "SMCE", "SOHU", "FCCN", "SNST", "TCTZF", "TCEHY", "TMMI", "TRON", "TCX", "TWTR", "WEB", "XNET", "YAHOY", "YNDX"];
+
 
 
 // var name_stock_array = ["no_name", "VNET","AGTK", "AKAM", "BIDU", "BCOR", "WIFI", "BRNW", "CARB", "JRJC", "CCIH", "CHICF", "CCOI", "CXDO", "CRWG", "EATR", "EDXC",

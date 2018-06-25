@@ -2,9 +2,8 @@
 <head>
 <title>Chart the Stock Market</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
-	
 </head>
 <body>
 <div id="big_contain">
@@ -24,7 +23,34 @@
 					<button id="add" onclick="add()">Submit</button>
 				</div> -->
 				<div id="input_button">
-					<input type="text" placeholder="Name of stock" id="namestock">
+					<!-- <input type="text" placeholder="Name of stock" id="namestock"> -->
+					<datalist id="namestock_dl">
+					  <option value="VNET">
+					  <option value="AGTK">
+					  <option value="AKAM">
+					  <option value="BIDU">
+					  <option value="BCOR">
+					  <option value="WIFI">
+					  <option value="BRNW">
+					  <option value="CARB">
+					  <option value="JRJC">
+					  <option value="CCIH">
+					  <option value="CHICF">
+					  <option value="CCOI">
+					  <option value="CXDO">
+					  <option value="CRWG">
+					  <option value="EATR">
+					  <option value="EDXC">
+					  <option value="ENV">
+					  <option value="FB">
+					  <option value="FLPC">
+					  <option value="FZRO">
+					  <option value="GEGI">
+					  <option value="GDDY">
+					  <option value="IAC">
+					  <option value="IIJI">
+					</datalist>
+					<input type="text" list="namestock_dl" id="namestock">
 					<input type="text" placeholder="data" id="data" style = "margin-top:10px;">
 					<button id="add" onclick="add_stock()">Add</button>
 					<button id="list" onclick="display_stock()">Chart of stocks</button>
