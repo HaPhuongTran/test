@@ -1,5 +1,6 @@
 
 var indexof;
+var arr1 = [];
 var lable_data = [];
 var ctx;
 var response = null;
@@ -16,6 +17,7 @@ load_first();
 var color = ["#000000","#2F4F4F", "#990033", "#528B8B", "#EEE8AA", "#8B4513", "#8B795E", "#E0EEE0", "#CDC1C5", "#E6E6FA", 
             "#8470FF", "#473C8B", "#27408B", "#0000EE", "#191970", "#B0E0E6", "#00B2EE", "#00688B", "#6CA6CD", "#E0FFFF"]
 
+//***************************************************************************//
 function load_first(){
     var xhr = new XMLHttpRequest();
     var url = "http://localhost:8000/list/listdate";
@@ -26,16 +28,16 @@ function load_first(){
         arr1 = Object.values(response);
     };
     xhr.send();
-
-
-    ctx = document.getElementById('myChart').getContext('2d');
-    lable_data = arr1;
-
-    data1.labels = lable_data;
-    connect()
+    
+    connect();
 }
 
+//***************************************************************************//
 
+ctx = document.getElementById('myChart').getContext('2d');
+lable_data = arr1;
+
+data1.labels = lable_data;
 
 var chart = new Chart(ctx, {
     type: 'line',
@@ -63,28 +65,36 @@ xhr1.onreadystatechange = function (responseText) {
 xhr1.send();
 
 
-
+//***************************************************************************//
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
+    value_stock = document.getElementById("namestock").value;
+    var socket = new SockJS('/my-websocket');
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-
-        console.log('Connected: ' + frame);
+    if(value_stock == ""){
+        stompClient.connect({}, function () {
         
-        stompClient.subscribe('/topic/listdata', function () {
-            // showGreeting(JSON.parse(greeting.body).content);
-            
+            stompClient.subscribe('/topic/listdata',function(){
+                display_stock(VNET);
+            });
+        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
         });
-    });
+    }
+    else{
+        stompClient.connect({}, function () {
+        
+            stompClient.subscribe('/topic/listdata',function(){
+                display_stock(value_stock);
+            });
+        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
+        });
+    }
+    
 }
 
-function sentstock(){
-    stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
-    //alert("aaaaa");
-    display_stock();
-}
+//***************************************************************************//
 
+//***************************************************************************//
 function add_tag(add_value){
     //value_namestock = document.getElementById("namestock").value;
     var div_add = document.createElement("div");
@@ -122,9 +132,11 @@ function add_tag(add_value){
     document.getElementById("name_of_stock").appendChild(div_add);
 
 }
+//***************************************************************************//
+
+//***************************************************************************//
 
 function button_close(button_value){
-    //value_namestock = document.getElementById("namestock").value;
     var b_close = document.getElementById(button_value +"_add");
     var get_id_stock = document.getElementById(button_value);
     b_close.addEventListener("click", function(){
@@ -143,10 +155,10 @@ function button_close(button_value){
     });
 }
 
+//***************************************************************************//
+//***************************************************************************//
 
 function reqListener (value_namestock) {
-    //value_namestock = document.getElementById("namestock").value;
-
     for(var i = 0; i<=datanamestock.length; i++){
         if(value_namestock.localeCompare(datanamestock[i]) !=0){
             var color_value = color[i];
@@ -191,9 +203,11 @@ function reqListener (value_namestock) {
     load_first();
 }
 
+//***************************************************************************//
+//***************************************************************************//
 
-function display_stock(){
-    value_stock = document.getElementById("namestock").value;
+function display_stock(value_stock){
+    //value_stock = document.getElementById("namestock").value;
     var xhr = new XMLHttpRequest();
     var url = "http://127.0.0.1:8000/list/" + value_stock;
     xhr.open("GET", url, false);
@@ -208,16 +222,17 @@ function display_stock(){
     };
     xhr.send();
 }
+//***************************************************************************//
+//***************************************************************************//
 
 function add_stock(){
-    
+    value_stock = document.getElementById("namestock").value;
     var xhr = new XMLHttpRequest();
     var url = "http://127.0.0.1:8000/add/stock";
     xhr.open("POST", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-    //alert(this.status);
-    display_stock();
+    display_stock(value_stock);
     };
     var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
     xhr.send(data);
