@@ -4,16 +4,17 @@ var lable_data = [];
 var ctx;
 var response = null;
 var VNET = "VNET";
+var data1 = {
+    labels: lable_data,
+    datasets:[]
+};
+var stompClient = null;
 
 load_first();
-//auto_complete();
 
 
 var color = ["#000000","#2F4F4F", "#990033", "#528B8B", "#EEE8AA", "#8B4513", "#8B795E", "#E0EEE0", "#CDC1C5", "#E6E6FA", 
-            "#8470FF", "#473C8B", "#27408B", "#0000EE", "#191970", "#B0E0E6", "#00B2EE", "#00688B", "#6CA6CD", "#E0FFFF",
-            "#5F9EA0", "#53868B", "#48D1CC", "#00CED1", "#40E0D0", "#00868B", "#76EEC6", "#9BCD9B", "#2E8B57", "#9AFF9A",
-            "#00EE76", "#008B45", "#00CD00", "#008B00", "#006400", "#20B2AA", "#00FA9A", "#ADFF2F", "#B3EE3A", "#556B2F",
-            "#A2CD5A", "#8B8B00", "#CDAD00", "#CD9B1D", "#8B658B", "#8B3A3A", "#CD6839", "#8B1A1A", "#8B0A50", "#551A8B"]
+            "#8470FF", "#473C8B", "#27408B", "#0000EE", "#191970", "#B0E0E6", "#00B2EE", "#00688B", "#6CA6CD", "#E0FFFF"]
 
 function load_first(){
     var xhr = new XMLHttpRequest();
@@ -29,12 +30,12 @@ function load_first(){
 
     ctx = document.getElementById('myChart').getContext('2d');
     lable_data = arr1;
+
+    data1.labels = lable_data;
+    connect()
 }
 
-var data1 = {
-         labels: lable_data,
-         datasets:[]
-};
+
 
 var chart = new Chart(ctx, {
     type: 'line',
@@ -60,6 +61,29 @@ xhr1.onreadystatechange = function (responseText) {
     arr2 = [];
 };
 xhr1.send();
+
+
+
+
+function connect() {
+    var socket = new SockJS('/gs-guide-websocket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+
+        console.log('Connected: ' + frame);
+        
+        stompClient.subscribe('/topic/listdata', function () {
+            // showGreeting(JSON.parse(greeting.body).content);
+            
+        });
+    });
+}
+
+function sentstock(){
+    stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
+    //alert("aaaaa");
+    display_stock();
+}
 
 function add_tag(add_value){
     //value_namestock = document.getElementById("namestock").value;
@@ -164,6 +188,7 @@ function reqListener (value_namestock) {
         // add_tag();
         // button_close();
     }
+    load_first();
 }
 
 

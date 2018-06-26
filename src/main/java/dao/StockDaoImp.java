@@ -52,7 +52,7 @@ public class StockDaoImp implements StockDao{
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
 		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
 		Root<Stock> root = criteriaQuery.from(Stock.class);
-		criteriaQuery.select(root.get("date"));
+		criteriaQuery.select(root.get("date")).distinct(true);
 		Query<String> query = session.createQuery(criteriaQuery);
 		List<String> listStock = query.getResultList();
 		return listStock;
