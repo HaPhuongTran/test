@@ -23,6 +23,7 @@ public class Stock implements Serializable {
 	
 	@Id
 	//@CreationTimestamp
+	
 	//@Temporal(TemporalType.TIMESTAMP)
 	private String date = new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime());
 	
@@ -31,8 +32,8 @@ public class Stock implements Serializable {
 	@ManyToOne
 	private color_stock name_Color;
 	
-	@ManyToOne
-	private color_stock date_color;
+//	@ManyToOne
+//	private color_stock date_color;
 
 	
 	

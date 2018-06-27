@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.HtmlUtils;
 
 import entity.Stock;
 import service.StockService; 
@@ -22,8 +23,8 @@ public class StockController {
 	@Autowired
 	private StockService stockService;
 	   /*---Add new book---*/
-	@MessageMapping("/addstock")
-	@SendTo("/topic/addstock")
+//	@MessageMapping("/addstock")
+//	@SendTo("/topic/addstock")
 	   @PostMapping("/add/stock")
 	   public ResponseEntity<Stock> save(@RequestBody  Stock stock){
 		   stockService.save(stock);
@@ -35,19 +36,27 @@ public class StockController {
 //		   return (stockService.get(namestock).isEmpty()) ? new ResponseEntity<>(HttpStatus.NOT_FOUND): new ResponseEntity<>(stockService.get(namestock), HttpStatus.FOUND);
 //	   }
 	   
-	   @MessageMapping("/listdata")
-	   @SendTo("/topic/listdata")
+	  
 	   @GetMapping("/list/{namestock}")
 	   public ResponseEntity<?> get(@PathVariable("namestock") String namestock) {
 		   return ResponseEntity.ok().body(stockService.get(namestock));
 	   }
 	   
-	   @MessageMapping("/listdate")
-	   @SendTo("/topic/listdate")
+	   @MessageMapping("/listdata")//review this
+	   @SendTo("/topic/listdata")
+	   public String get(Stock stock) {
+		  String a =  HtmlUtils.htmlEscape(stock.getNameOfStock());
+		   return a;
+	   }
+	   
+//	   @MessageMapping("/listdate")
+//	   @SendTo("/topic/listdate")
 	   @GetMapping("/list/listdate")
 	   public ResponseEntity<List<String>> getDate() {
 		   return ResponseEntity.ok().body(stockService.getDate());
 	   }
+	   
+	   
 	   
 //	   @RequestMapping("/liststock")
 //	   public ResponseEntity<List<Stock>> list() {

@@ -6,7 +6,7 @@ var ctx;
 var response = null;
 var VNET = "VNET";
 var stompClient = null;
-
+var client = null;
 load_first();
 
 
@@ -24,9 +24,9 @@ function load_first(){
         arr1 = Object.values(response);
     };
     xhr.send();
-    
-    connect();
+    document.getElementById("namestock").value
 }
+connect();
 
 //***************************************************************************//
 
@@ -46,48 +46,23 @@ var chart = new Chart(ctx, {
 var datanamestock =[];
 var count =0;
 
-
-
-var xhr1 = new XMLHttpRequest();
-var url1 = "http://127.0.0.1:8000/list/" + VNET;
-xhr1.open("GET", url1, false);
-xhr1.addEventListener("load", function() {
-            reqListener(VNET);
-        });
-xhr1.setRequestHeader("Content-Type", "application/json");
-xhr1.onreadystatechange = function (responseText) {
-//alert(JSON.stringify(responseText));
-    response = JSON.parse(this.response);
-    arr2 = [];
-};
-xhr1.send();
-
-
+display_stock(VNET);
 //***************************************************************************//
 
 function connect() {
-    value_stock = document.getElementById("namestock").value;
     var socket = new SockJS('/my-websocket');
     stompClient = Stomp.over(socket);
-    if(value_stock == ""){
-        stompClient.connect({}, function () {
-        
-            stompClient.subscribe('/topic/listdata',function(){
-                display_stock(VNET);
-            });
-        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
+    stompClient.connect({}, function () {
+        stompClient.subscribe('/topic/listdata',function(){
+            client.onmessage =  function(event){
+                display_stock(event.data);
+            }
         });
-    }
-    else{
-        stompClient.connect({}, function () {
-        
-            stompClient.subscribe('/topic/listdata',function(){
-                display_stock(value_stock);
-            });
-        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
-        });
-    }
-    
+    });
+}
+
+function sent_data(name__Stock){
+    stompClient.send("/app/listdata", {}, JSON.stringify({'name': name__Stock}));
 }
 
 //***************************************************************************//
@@ -195,15 +170,16 @@ function reqListener (value_namestock) {
         }
         data1.datasets.push(newDataset);
         chart.update();
-        // add_tag();
-        // button_close();
     }
-    load_first();
 }
 
 //***************************************************************************//
 //***************************************************************************//
-
+function click_display_stock(){
+   
+    //display_stock(document.getElementById("namestock").value);
+    sent_data(document.getElementById("namestock").value);
+}
 function display_stock(value_stock){
     //value_stock = document.getElementById("namestock").value;
     var xhr = new XMLHttpRequest();
@@ -214,7 +190,6 @@ function display_stock(value_stock){
         });
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function (responseText) {
-    //alert(JSON.stringify(responseText));
         response = JSON.parse(this.response);
         var arr = [];
     };
@@ -230,7 +205,7 @@ function add_stock(){
     xhr.open("POST", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-    display_stock(value_stock);
+    display_stock();
     };
     var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
     xhr.send(data);

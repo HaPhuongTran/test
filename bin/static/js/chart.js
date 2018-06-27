@@ -5,12 +5,8 @@ var lable_data = [];
 var ctx;
 var response = null;
 var VNET = "VNET";
-var data1 = {
-    labels: lable_data,
-    datasets:[]
-};
 var stompClient = null;
-
+var client = null;
 load_first();
 
 
@@ -28,16 +24,18 @@ function load_first(){
         arr1 = Object.values(response);
     };
     xhr.send();
-    
-    connect();
+    document.getElementById("namestock").value
 }
+connect();
 
 //***************************************************************************//
 
 ctx = document.getElementById('myChart').getContext('2d');
 lable_data = arr1;
-
-data1.labels = lable_data;
+var data1 = {
+    labels: lable_data,
+    datasets:[]
+};
 
 var chart = new Chart(ctx, {
     type: 'line',
@@ -48,48 +46,23 @@ var chart = new Chart(ctx, {
 var datanamestock =[];
 var count =0;
 
-
-
-var xhr1 = new XMLHttpRequest();
-var url1 = "http://127.0.0.1:8000/list/" + VNET;
-xhr1.open("GET", url1, false);
-xhr1.addEventListener("load", function() {
-            reqListener(VNET);
-        });
-xhr1.setRequestHeader("Content-Type", "application/json");
-xhr1.onreadystatechange = function (responseText) {
-//alert(JSON.stringify(responseText));
-    response = JSON.parse(this.response);
-    arr2 = [];
-};
-xhr1.send();
-
-
+display_stock(VNET);
 //***************************************************************************//
 
 function connect() {
-    value_stock = document.getElementById("namestock").value;
     var socket = new SockJS('/my-websocket');
     stompClient = Stomp.over(socket);
-    if(value_stock == ""){
-        stompClient.connect({}, function () {
-        
-            stompClient.subscribe('/topic/listdata',function(){
-                display_stock(VNET);
-            });
-        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
+    stompClient.connect({}, function () {
+        stompClient.subscribe('/topic/listdata',function(){
+            client.onmessage =  function(event){
+                display_stock(event.data);
+            }
         });
-    }
-    else{
-        stompClient.connect({}, function () {
-        
-            stompClient.subscribe('/topic/listdata',function(){
-                display_stock(value_stock);
-            });
-        stompClient.send("/app/listdata", {}, JSON.stringify({'name': "Phuong"}));
-        });
-    }
-    
+    });
+}
+
+function sent_data(name__Stock){
+    stompClient.send("/app/listdata", {}, JSON.stringify({'name': name__Stock}));
 }
 
 //***************************************************************************//
@@ -197,15 +170,16 @@ function reqListener (value_namestock) {
         }
         data1.datasets.push(newDataset);
         chart.update();
-        // add_tag();
-        // button_close();
     }
-    load_first();
 }
 
 //***************************************************************************//
 //***************************************************************************//
-
+function click_display_stock(){
+   
+    //display_stock(document.getElementById("namestock").value);
+    sent_data(document.getElementById("namestock").value);
+}
 function display_stock(value_stock){
     //value_stock = document.getElementById("namestock").value;
     var xhr = new XMLHttpRequest();
@@ -216,7 +190,6 @@ function display_stock(value_stock){
         });
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function (responseText) {
-    //alert(JSON.stringify(responseText));
         response = JSON.parse(this.response);
         var arr = [];
     };
@@ -232,7 +205,7 @@ function add_stock(){
     xhr.open("POST", url, false);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
-    display_stock(value_stock);
+    display_stock();
     };
     var data = JSON.stringify({"nameOfStock": document.getElementById("namestock").value, "data": document.getElementById("data").value});
     xhr.send(data);
@@ -243,109 +216,5 @@ function add_stock(){
 // var name_stock_array = ["no_name", "VNET","AGTK", "AKAM", "BIDU", "BCOR", "WIFI", "BRNW", "CARB", "JRJC", "CCIH", "CHICF", "CCOI", "CXDO", "CRWG", "EATR", "EDXC",
 //                         "ENV", "FB", "FLPC", "FZRO", "GEGI", "GDDY", "IAC", "IIJI", "IPAS","JCOM", "LOGL", "LLNW", "MOMO", "NTES", "EGOV", "OTOW", "OPESY",
 //                         "PTOP", "SIFY", "SINA", "SMCE", "SOHU", "FCCN", "SNST", "TCTZF", "TCEHY", "TMMI", "TRON", "TCX", "TWTR", "WEB", "XNET", "YAHOY", "YNDX"];
-
-
-// var data_num = [23,45,2,6,1,56,38,23,57,68,43,13,76,34, 100,57,277,345,78,1111,2075, 56,47,33,68,2345,670,135];
-
-
-
- // var ctx = document.getElementById('myChart').getContext('2d');
-
-// lable_data = ["January", "February", "March", "April", "May", "June", "July"];
-// var data = {
-//          labels: lable_data,
-//          datasets:[{
-//                     label: "VNET",
-//                     backgroundColor: 'rgba(255, 255, 255, 0)',
-//                     borderColor: "#000000",
-//                     data: [23,45,2,6,1,56,38],
-//                 }]
-// };
-
-// var chart = new Chart(ctx, {
-//     type: 'line',
-//     data: data,
-//     options: {}
-// });
-
-// var input = document.getElementById("fill_stock");
-// input.addEventListener("keyup", function(event){
-//     event.preventDefault();
-//     if(event.keyCode == 13 || event.which == 13){
-//         document.getElementById("add").click();
-//     }
-// });
-
-// function add(){
-
-//     var get_name_stock = document.getElementById("fill_stock").value;
-//     for(var i =0; i<name_stock_array.length; i++){
-//         if(name_stock_array[i].localeCompare(get_name_stock) == 0){
-
-//             var div_add = document.createElement("div");
-//             var sub_div_add = document.createElement("div");
-//             var h3_add = document.createElement ("h3");
-//             var p_add = document.createElement ("p");
-//             var button_add = document.createElement("button");
-
-//             h3_add.style.color = "#FFFFFF";
-//             sub_div_add.style.backgroundColor = color[i];
-            
-
-//             div_add.classList.add("name_stock");
-//             div_add.id = get_name_stock;
-//             sub_div_add.classList.add("sub_div");
-//             button_add.id = color[i];
-//             button_add.classList.add("button_add");
-            
-
-//             var textnode = document.createTextNode(get_name_stock);
-//             var text_button = document.createTextNode("X");
-//             var text_add = document.createTextNode("Microsoft Corporation (MSFT) Prices, Dividends, Splits and Trading Volume");
-            
-//             div_add.appendChild(sub_div_add);
-//             div_add.appendChild(p_add);
-//             sub_div_add.appendChild(button_add);
-//             sub_div_add.appendChild(h3_add);
-//             button_add.appendChild(text_button);
-//             p_add.appendChild(text_add);
-//             h3_add.appendChild(textnode);
-
-//             document.getElementById("name_of_stock").appendChild(div_add);
-
-
-//             var newdata =[];
-//             //add data into data array
-//                 for(var t = (i*lable_data.length)-lable_data.length; t<(i*lable_data.length); t++){
-//                     newdata.push(data_num[t]);
-//                 }
-//                 //alert(newdata);
-//                 var newDataset = {
-//                     label: get_name_stock,
-//                     backgroundColor: 'rgba(255, 255, 255, 0)',
-//                     borderColor: color[i],
-//                     data: newdata,
-//                 }
-//                 data.datasets.push(newDataset);
-//                 chart.update();
-//                 newdata=[];
-
-//             document.getElementById("fill_stock").value = '';
-            
-//             break;
-//         }
-//     } 
-//     var b_close = document.getElementById(color[i]);
-//     var get_id_stock = document.getElementById(get_name_stock);
-//     b_close.addEventListener("click", function(){
-//         get_id_stock.remove();
-//         for( var index =0; index< data.datasets.length; index++){
-//             if(data.datasets[index].label == get_name_stock){
-//                 data.datasets.splice(index,1);
-//                 chart.update();
-//             }
-//         }
-//     });   
-// }
 
 //data.datasets[i].label
